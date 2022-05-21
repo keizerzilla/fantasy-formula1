@@ -64,13 +64,13 @@ def filter_teams(pop, budget):
         team_price = p["constructor"]["price"]
         drivers_price = sum([d["price"] for d in p["drivers"]])
         total_price = team_price + drivers_price
-        
         unique_drivers = len(list(set([d["driver"] for d in p["drivers"]])))
         
         if total_price <= budget and unique_drivers == 5:
             filtered_pop.append(p)
     
     return filtered_pop
+
 
 def fitness(pop):
     for p in pop:
@@ -134,7 +134,7 @@ def genetic_algorithm(target_team, race, budget, pop_size, num_generations, verb
     
     for i in range(num_generations):
         pop = crossover(pop, 0.50)
-        pop = mutation(pop, df_drivers, 0.05)
+        pop = mutation(pop, df_drivers, 0.1)
         pop = filter_teams(pop, budget)
         pop = fitness(pop)
         pop = sort(pop)
@@ -147,14 +147,28 @@ def genetic_algorithm(target_team, race, budget, pop_size, num_generations, verb
     
     return pop[0]
 
-if __name__ == "__main__":
-    target_team = "ferrari"
+
+def best_team_by_constructor(constructor):
     race = None
     budget = 100
     pop_size = 3000
-    num_generations = 100
+    num_generations = 50
     
-    best = genetic_algorithm(target_team, race, budget, pop_size, num_generations, verbose=False)
+    best = genetic_algorithm(constructor, race, budget, pop_size, num_generations, verbose=False)
     summary_team(best)
+
+
+def best_team_search():
+    all_constructors = ["mercedes", "redbull", "ferrari", "mclaren", "alpine",
+                        "astonmartin", "alphatauri", "alfaromeo", "williams", "haas"]
+    
+    for constructor in all_constructors:
+        print(f"Best {constructor} team...")
+        best_team_by_constructor(constructor)
+        print()
+
+
+if __name__ == "__main__":
+    best_team_search()
     
 
